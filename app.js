@@ -87,6 +87,27 @@ function lastExercisePerformance(exercise){
     return "No previous workout";
 }
 
+function getLastExerciseSets(exercise){
+
+    for(let i=db.workouts.length-1;i>=0;i--){
+
+        const found =
+        db.workouts[i].exercises.find(
+            e=>e.name===exercise
+        );
+
+        if(found && found.sets){
+
+            return found.sets;
+
+        }
+
+    }
+
+    return null;
+
+}
+
 function generateWorkout(){
 
     const split = nextSplit();
@@ -111,6 +132,9 @@ function generateWorkout(){
         const history =
         lastExercisePerformance(exercise);
 
+        const previousSets =
+        getLastExerciseSets(exercise);
+
         const card =
         document.createElement('div');
 
@@ -126,27 +150,66 @@ function generateWorkout(){
             ${history}
 
         </div>
+        
+        <div class="set-row-header">
+
+            <span>Set</span>
+
+            <span>Weight</span>
+
+            <span>Reps</span>
+
+        </div>
 
         <div class="sets">
 
             <div class="set-row">
                 <span>1</span>
-                <input class="weight" placeholder="Weight (lbs)">
-                <input class="reps" placeholder="Reps">
+
+                <input
+                    class="weight"
+                    placeholder="Weight"
+                    value="${previousSets?.[0]?.weight || ''}"
+                >
+
+                <input
+                    class="reps"
+                    placeholder="Reps"
+                    value="${previousSets?.[0]?.reps || ''}"
+                >
             </div>
 
             <div class="set-row">
                 <span>2</span>
-                <input class="weight" placeholder="Weight (lbs)">
-                <input class="reps" placeholder="Reps">
+
+                <input
+                    class="weight"
+                    placeholder="Weight"
+                    value="${previousSets?.[1]?.weight || ''}"
+                >
+
+                <input
+                    class="reps"
+                    placeholder="Reps"
+                    value="${previousSets?.[1]?.reps || ''}"
+                >
             </div>
 
             <div class="set-row">
                 <span>3</span>
-                <input class="weight" placeholder="Weight (lbs)">
-                <input class="reps" placeholder="Reps">
-            </div>
 
+                <input
+                    class="weight"
+                    placeholder="Weight"
+                    value="${previousSets?.[2]?.weight || ''}"
+                >
+
+                <input
+                    class="reps"
+                    placeholder="Reps"
+                    value="${previousSets?.[2]?.reps || ''}"
+                >
+            </div>
         </div>
 
         <button class="add-set-btn">
@@ -184,8 +247,8 @@ function generateWorkout(){
 
             <span>${count}</span>
 
-            <input class="weight" placeholder="Weight (lbs)">
-            <input class="reps" placeholder="Reps">
+                <input class="weight">
+                <input class="reps">
 
             `;
 
