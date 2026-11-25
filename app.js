@@ -139,18 +139,6 @@ function generateWorkout(){
         const previousSets =
         getLastExerciseSets(exercise);
 
-        <div class="previous-performance">
-
-            Suggested:
-
-            ${
-                suggestion
-                ? suggestion+' lbs'
-                : 'Use a comfortable weight'
-            }
-
-        </div>
-
         const card =
         document.createElement('div');
 
@@ -164,6 +152,17 @@ function generateWorkout(){
 
             Previous:
             ${history}
+
+        </div>
+
+        <div class="previous-performance">
+
+            Suggested:
+            ${
+                suggestion
+                ? suggestion + ' lbs'
+                : 'Use a comfortable weight'
+            }
 
         </div>
         
@@ -582,9 +581,11 @@ function showExerciseHistory(){
 
 }
 
-historyExercise.addEventListener(
-'change',
-showExerciseHistory
+document.getElementById(
+    'historyExercise'
+).addEventListener(
+    'change',
+    showExerciseHistory
 );
 
 function suggestedWeight(exercise){
