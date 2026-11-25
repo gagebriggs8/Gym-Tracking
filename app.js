@@ -6,14 +6,14 @@ personalRecords:{},
 badges:[]
 };
 
-const workouts={
-
- const exerciseStats = {
+const exerciseStats = {
     personalRecords:{},
     volumeRecords:{},
     oneRMRecords:{}
 };
-    
+
+const workouts={
+
 Push:[
 ['Bench Press','Incline DB Press','Shoulder Press','Lateral Raise','Tricep Pushdown'],
 ['Incline Bench','Dumbbell Press','Arnold Press','Cable Fly','Overhead Extension']
@@ -205,10 +205,6 @@ for(let i=db.workouts.length-1;i>=0;i--){
  if(hit)return `${hit.weight} x ${hit.reps}`;
 }
 return 'No History';
-}
-
-function estimate1RM(weight,reps){
-return Math.round(weight*(1+reps/30));
 }
 
 document.getElementById('generateWorkout').onclick=generateWorkout;
