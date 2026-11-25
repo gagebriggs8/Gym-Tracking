@@ -395,7 +395,7 @@ document.getElementById(
     save();
 
     refreshDashboard();
-
+    renderCalendar();
     alert(
       'Workout Saved'
     );
@@ -433,10 +433,178 @@ if(db.workouts.length===10 && !db.badges.includes('10 Workouts')){
 }
 }
 
+function calculateCurrentStreak(){
+
+    if(db.workouts.length === 0){
+        return 0;
+    }
+
+    const workoutDays = [...new Set(
+        db.workouts.map(w =>
+            new Date(w.date)
+            .toDateString()
+        )
+    )];
+
+    workoutDays.sort(
+        (a,b)=> new Date(b)-new Date(a)
+    );
+
+    let streak = 1;
+
+    for(let i=1;i<workoutDays.length;i++){
+
+        const current =
+        new Date(workoutDays[i-1]);
+
+        const previous =
+        new Date(workoutDays[i]);
+
+        const diff =
+        (current - previous) /
+        (1000*60*60*24);
+
+        if(diff===1){
+            streak++;
+        }else{
+            break;
+        }
+    }
+
+    return streak;
+}
+
+function longestStreak(){
+
+    if(db.workouts.length===0){
+        return 0;
+    }
+
+    const days = [...new Set(
+        db.workouts.map(w =>
+            new Date(w.date)
+            .toDateString()
+        )
+    )];
+
+    days.sort(
+        (a,b)=>new Date(a)-new Date(b)
+    );
+
+    let longest=1;
+    let current=1;
+
+    for(let i=1;i<days.length;i++){
+
+        const diff=
+        (new Date(days[i])-
+         new Date(days[i-1]))
+        /(1000*60*60*24);
+
+        if(diff===1){
+
+            current++;
+
+            longest=Math.max(
+                longest,
+                current
+            );
+
+        }else{
+
+            current=1;
+
+        }
+
+    }
+
+    return longest;
+}
+
+function checkAchievements(){
+
+    const earned=[];
+
+    if(db.workouts.length>=10){
+
+        earned.push(
+        '🥉 10 Workouts'
+        );
+
+    }
+
+    if(db.workouts.length>=50){
+
+        earned.push(
+        '🥈 50 Workouts'
+        );
+
+    }
+
+    if(db.workouts.length>=100){
+
+        earned.push(
+        '🥇 100 Workouts'
+        );
+
+    }
+
+    if(calculateCurrentStreak()>=7){
+
+        earned.push(
+        '🔥 7 Day Streak'
+        );
+
+    }
+
+    if(calculateCurrentStreak()>=30){
+
+        earned.push(
+        '🔥 30 Day Streak'
+        );
+
+    }
+
+    db.badges = earned;
+
+}
+
+function renderBadges(){
+
+    const container =
+    document.getElementById(
+        'badgeContainer'
+    );
+
+    if(!container) return;
+
+    container.innerHTML='';
+
+    db.badges.forEach(badge=>{
+
+        container.innerHTML += `
+
+        <div class="history-card">
+
+            ${badge}
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
 function refreshDashboard(){
 currentWeight.textContent=db.weights.at(-1)?.weight||0;
 workoutCount.textContent=db.workouts.length;
-streak.textContent=db.workouts.length;
+streak.textContent=
+calculateCurrentStreak();
+
+bestStreak.textContent=
+longestStreak();
 
 const today=new Date().toDateString();
 const calories=db.foods
@@ -446,6 +614,8 @@ const calories=db.foods
 caloriesToday.textContent=calories;
 recommendedWorkout.innerHTML=`<h3>${nextSplit()} Day Recommended</h3>`;
 renderPRs();
+checkAchievements();
+renderBadges();
 }
 
 function renderPRs(){
@@ -475,6 +645,62 @@ function renderPRs(){
             ${pr} lbs
 
             </p>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+function renderCalendar(){
+
+    const grid =
+    document.getElementById(
+        'calendarGrid'
+    );
+
+    if(!grid) return;
+
+    grid.innerHTML='';
+
+    db.workouts.forEach(workout=>{
+
+        let color='#999';
+
+        if(workout.split==='Push'){
+            color='#ef4444';
+        }
+
+        if(workout.split==='Pull'){
+            color='#3b82f6';
+        }
+
+        if(workout.split==='Legs'){
+            color='#22c55e';
+        }
+
+        grid.innerHTML += `
+
+        <div
+            class="calendar-day"
+            style="
+                background:${color};
+                color:white;
+                padding:10px;
+                margin:5px;
+                border-radius:10px;
+            "
+        >
+
+        ${new Date(
+          workout.date
+        ).toLocaleDateString()}
+
+        <br>
+
+        ${workout.split}
 
         </div>
 
@@ -644,3 +870,4 @@ navigator.serviceWorker.register('service-worker.js');
 refreshDashboard();
 populateHistoryDropdown();
 drawCharts();
+renderCalendar();
