@@ -233,6 +233,10 @@ function generateWorkout(){
 
         <h3>${exercise}</h3>
 
+        <button class="removeExerciseBtn">
+        Remove Exercise
+        </button>
+
         <div class="previous-performance">
 
             Previous:
@@ -356,8 +360,147 @@ function generateWorkout(){
             .appendChild(row);
 
         };
+        document
+        .querySelectorAll(
+        '.removeExerciseBtn'
+        )
+        .forEach(btn=>{
+
+            btn.onclick=()=>{
+
+                btn
+                .closest(
+                '.exercise-card'
+                )
+                .remove();
+
+            };
+
+        });
 
     });
+
+}
+
+function renderSavedWorkouts(){
+
+    const container =
+    document.getElementById(
+        'savedWorkouts'
+    );
+
+    if(!container) return;
+
+    container.innerHTML='';
+
+    db.workouts
+    .slice()
+    .reverse()
+    .forEach((workout,index)=>{
+
+        container.innerHTML += `
+
+        <div class="history-card">
+
+            <strong>
+
+            ${new Date(
+                workout.date
+            ).toLocaleDateString()}
+
+            </strong>
+
+            <br>
+
+            ${workout.split}
+
+            <br><br>
+
+            <button
+                onclick="deleteWorkout(${db.workouts.length-1-index})"
+            >
+
+                Delete Workout
+
+            </button>
+            <button
+            onclick="editWorkout(${db.workouts.length-1-index})"
+            >
+            Edit
+            </button>
+
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+function editWorkout(index){
+
+    const workout =
+    db.workouts[index];
+
+    document
+    .querySelectorAll(
+    '.page'
+    )
+    .forEach(
+        p=>p.classList.remove(
+            'active'
+        )
+    );
+
+    document
+    .getElementById(
+        'workout'
+    )
+    .classList.add(
+        'active'
+    );
+
+    const container =
+    document.getElementById(
+        'workoutContainer'
+    );
+
+    container.innerHTML='';
+
+    workout.exercises.forEach(
+        exercise=>{
+
+            addExerciseCard(
+                exercise.name
+            );
+
+        }
+    );
+
+}
+
+function deleteWorkout(index){
+
+    const confirmed =
+    confirm(
+        'Delete workout?'
+    );
+
+    if(!confirmed) return;
+
+    db.workouts.splice(
+        index,
+        1
+    );
+
+    save();
+
+    refreshDashboard();
+
+    renderCalendar();
+
+    renderSavedWorkouts();
 
 }
 
@@ -1127,4 +1270,5 @@ refreshDashboard();
 populateHistoryDropdown();
 drawCharts();
 renderCalendar();
+renderSavedWorkouts();
 populateExerciseDatabase();
