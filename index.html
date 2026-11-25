@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Fitness Tracker</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+<h1>Ultimate Fitness Tracker</h1>
+<button id="themeToggle">🌙</button>
+</header>
+
+<nav>
+<button data-page="dashboard">Dashboard</button>
+<button data-page="workout">Workout</button>
+<button data-page="nutrition">Nutrition</button>
+<button data-page="progress">Progress</button>
+<button data-page="calendar">Calendar</button>
+<button data-page="settings">Settings</button>
+</nav>
+
+<section id="dashboard" class="page active">
+<h2>Today's Workout</h2>
+<div id="recommendedWorkout"></div>
+<div class="stats-grid">
+<div class="card"><h3>Current Weight</h3><span id="currentWeight">0</span></div>
+<div class="card"><h3>Workout Streak</h3><span id="streak">0</span></div>
+<div class="card"><h3>Total Workouts</h3><span id="workoutCount">0</span></div>
+<div class="card"><h3>Calories Today</h3><span id="caloriesToday">0</span></div>
+</div>
+</section>
+
+<section id="workout" class="page">
+<h2>Workout Generator</h2>
+<button id="generateWorkout">Generate Workout</button>
+<div id="workoutContainer"></div>
+<button id="saveWorkout">Save Workout</button>
+</section>
+
+<section id="nutrition" class="page">
+<h2>Food Log</h2>
+<input id="foodName" placeholder="Food Name">
+<input id="foodCalories" type="number" placeholder="Calories">
+<input id="foodProtein" type="number" placeholder="Protein">
+<input id="foodCarbs" type="number" placeholder="Carbs">
+<input id="foodFat" type="number" placeholder="Fat">
+<button id="addFood">Add Food</button>
+<div id="foodLog"></div>
+</section>
+
+<section id="progress" class="page">
+<h2>Progress</h2>
+<canvas id="weightChart"></canvas>
+<canvas id="volumeChart"></canvas>
+<div id="prList"></div>
+</section>
+
+<section id="calendar" class="page">
+<h2>Workout Calendar</h2>
+<div id="calendarGrid"></div>
+</section>
+
+<section id="settings" class="page">
+<h2>Settings</h2>
+<input id="bodyWeight" type="number" placeholder="Weight">
+<button id="saveWeight">Save Weight</button>
+<button id="exportData">Export Data</button>
+<input type="file" id="importDataFile">
+<button id="importData">Import Data</button>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
