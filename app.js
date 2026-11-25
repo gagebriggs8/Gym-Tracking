@@ -13,6 +13,61 @@ const exerciseStats = {
     oneRMRecords:{}
 };
 
+const exerciseDatabase = {
+
+Chest:[
+"Bench Press",
+"Incline Bench",
+"Decline Bench",
+"Dumbbell Press",
+"Cable Fly",
+"Pec Deck",
+"Dips"
+],
+
+Back:[
+"Pull Up",
+"Lat Pulldown",
+"Barbell Row",
+"Cable Row",
+"T Bar Row",
+"Rack Pull"
+],
+
+Shoulders:[
+"Military Press",
+"Arnold Press",
+"Lateral Raise",
+"Front Raise",
+"Rear Delt Fly"
+],
+
+Biceps:[
+"Barbell Curl",
+"Hammer Curl",
+"Preacher Curl",
+"Cable Curl"
+],
+
+Triceps:[
+"Pushdown",
+"Skull Crusher",
+"Dips",
+"Overhead Extension"
+],
+
+Legs:[
+"Squat",
+"Front Squat",
+"Leg Press",
+"Leg Extension",
+"Ham Curl",
+"Calf Raise",
+"RDL"
+]
+
+};
+
 const workouts={
 
 Push:[
@@ -31,6 +86,36 @@ Legs:[
 
 function save(){
 localStorage.setItem('fitness-db',JSON.stringify(db));
+}
+
+function populateExerciseDatabase(){
+
+    const selector =
+    document.getElementById(
+        'exerciseSelector'
+    );
+
+    selector.innerHTML='';
+
+    Object.values(
+        exerciseDatabase
+    )
+    .flat()
+    .sort()
+    .forEach(exercise=>{
+
+        selector.innerHTML+=`
+
+        <option>
+
+        ${exercise}
+
+        </option>
+
+        `;
+
+    });
+
 }
 
 function nextSplit(){
@@ -603,6 +688,12 @@ workoutCount.textContent=db.workouts.length;
 streak.textContent=
 calculateCurrentStreak();
 
+monthlyVolume.textContent =
+monthlyVolume();
+
+estimatedTime.textContent =
+estimateWorkoutTime();
+
 bestStreak.textContent=
 longestStreak();
 
@@ -750,6 +841,156 @@ function populateHistoryDropdown(){
 
 }
 
+function addExerciseCard(exercise){
+
+    const container =
+    document.getElementById(
+        'workoutContainer'
+    );
+
+    const card =
+    document.createElement(
+        'div'
+    );
+
+    card.className =
+    'exercise-card';
+
+    card.innerHTML=`
+
+    <h3>${exercise}</h3>
+
+    <button
+       class="removeExercise"
+    >
+       Remove
+    </button>
+
+    <div class="sets">
+
+      <div class="set-row">
+
+         <span>1</span>
+
+         <input
+          class="weight"
+          placeholder="Weight"
+         >
+
+         <input
+          class="reps"
+          placeholder="Reps"
+         >
+
+      </div>
+
+      <div class="set-row">
+
+         <span>2</span>
+
+         <input
+          class="weight"
+          placeholder="Weight"
+         >
+
+         <input
+          class="reps"
+          placeholder="Reps"
+         >
+
+      </div>
+
+      <div class="set-row">
+
+         <span>3</span>
+
+         <input
+          class="weight"
+          placeholder="Weight"
+         >
+
+         <input
+          class="reps"
+          placeholder="Reps"
+         >
+
+      </div>
+
+    </div>
+
+    <button class="add-set-btn">
+
+       + Add Set
+
+    </button>
+
+    `;
+
+    container.appendChild(
+        card
+    );
+
+}
+
+function estimateWorkoutTime(){
+
+    const last =
+    db.workouts.at(-1);
+
+    if(!last){
+
+        return "45 min";
+
+    }
+
+    const exerciseCount =
+    last.exercises.length;
+
+    const estimated =
+    (exerciseCount * 8);
+
+    return estimated
+    + " min";
+
+}
+
+function monthlyVolume(){
+
+    const month =
+    new Date().getMonth();
+
+    let volume=0;
+
+    db.workouts.forEach(
+        workout=>{
+
+            const date=
+            new Date(
+            workout.date
+            );
+
+            if(
+             date.getMonth()
+             === month
+            ){
+
+                workout.exercises
+                .forEach(ex=>{
+
+                    volume +=
+                    ex.volume || 0;
+
+                });
+
+            }
+
+        }
+    );
+
+    return volume;
+
+}
+
 function showExerciseHistory(){
 
     const exercise=
@@ -806,6 +1047,21 @@ function showExerciseHistory(){
     });
 
 }
+
+document
+.getElementById(
+'addExerciseBtn'
+)
+.onclick=()=>{
+
+    const exercise =
+    exerciseSelector.value;
+
+    addExerciseCard(
+        exercise
+    );
+
+};
 
 document.getElementById(
     'historyExercise'
@@ -871,3 +1127,4 @@ refreshDashboard();
 populateHistoryDropdown();
 drawCharts();
 renderCalendar();
+populateExerciseDatabase();
