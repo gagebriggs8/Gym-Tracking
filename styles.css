@@ -73,7 +73,7 @@ border-radius:12px;
 
 .set-row{
 display:grid;
-grid-template-columns:60px 1fr 1fr;
+grid-template-columns:60px 1fr 1fr 50px;
 gap:10px;
 margin-bottom:8px;
 align-items:center;
@@ -123,4 +123,17 @@ gap:10px;
 font-weight:bold;
 margin-bottom:8px;
 opacity:.8;
+}
+
+.remove-set-btn{
+    background:#dc2626;
+    color:white;
+    border:none;
+    border-radius:8px;
+    padding:6px 10px;
+    cursor:pointer;
+}
+
+.remove-set-btn:hover{
+    background:#b91c1c;
 }

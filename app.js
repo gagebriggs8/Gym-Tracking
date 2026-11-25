@@ -347,18 +347,33 @@ function generateWorkout(){
 
             row.className='set-row';
 
-            row.innerHTML=`
+           row.innerHTML=`
 
             <span>${count}</span>
 
-                <input class="weight">
-                <input class="reps">
+            <input
+                class="weight"
+                placeholder="Weight"
+            >
+
+            <input
+                class="reps"
+                placeholder="Reps"
+            >
+
+            <button
+                class="remove-set-btn"
+                type="button"
+            >
+            ×
+            </button>
 
             `;
 
             setsContainer
             .appendChild(row);
 
+            initializeRemoveSetButtons();
         };
         document
         .querySelectorAll(
@@ -377,6 +392,51 @@ function generateWorkout(){
             };
 
         });
+
+    });
+
+    initializeRemoveSetButtons();
+}
+
+function initializeRemoveSetButtons(){
+
+    document
+    .querySelectorAll(
+        '.remove-set-btn'
+    )
+    .forEach(btn=>{
+
+        btn.onclick=()=>{
+
+            const row =
+            btn.closest(
+                '.set-row'
+            );
+
+            row.remove();
+
+            renumberSets(
+                btn.closest('.sets')
+            );
+
+        };
+
+    });
+
+}
+
+function renumberSets(container){
+
+    container
+    .querySelectorAll(
+        '.set-row'
+    )
+    .forEach((row,index)=>{
+
+        row.querySelector(
+            'span'
+        ).textContent =
+        index + 1;
 
     });
 
