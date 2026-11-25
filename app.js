@@ -131,20 +131,20 @@ function generateWorkout(){
 
             <div class="set-row">
                 <span>1</span>
-                <input class="weight">
-                <input class="reps">
+                <input class="weight" placeholder="Weight (lbs)">
+                <input class="reps" placeholder="Reps">
             </div>
 
             <div class="set-row">
                 <span>2</span>
-                <input class="weight">
-                <input class="reps">
+                <input class="weight" placeholder="Weight (lbs)">
+                <input class="reps" placeholder="Reps">
             </div>
 
             <div class="set-row">
                 <span>3</span>
-                <input class="weight">
-                <input class="reps">
+                <input class="weight" placeholder="Weight (lbs)">
+                <input class="reps" placeholder="Reps">
             </div>
 
         </div>
@@ -184,9 +184,8 @@ function generateWorkout(){
 
             <span>${count}</span>
 
-            <input class="weight">
-
-            <input class="reps">
+            <input class="weight" placeholder="Weight (lbs)">
+            <input class="reps" placeholder="Reps">
 
             `;
 
