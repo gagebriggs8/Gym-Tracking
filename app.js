@@ -3,7 +3,7 @@ workouts:[],
 foods:[],
 weights:[],
 personalRecords:{},
-volumePRs:{}
+volumePRs:{},
 badges:[]
 };
 
