@@ -3,8 +3,8 @@ workouts:[],
 foods:[],
 weights:[],
 personalRecords:{},
-badges:[]
 volumePRs:{}
+badges:[]
 };
 
 const exerciseStats = {
