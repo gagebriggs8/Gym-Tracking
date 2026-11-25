@@ -4,6 +4,7 @@ foods:[],
 weights:[],
 personalRecords:{},
 badges:[]
+volumePRs:{}
 };
 
 const exerciseStats = {
@@ -132,8 +133,23 @@ function generateWorkout(){
         const history =
         lastExercisePerformance(exercise);
 
+        const suggestion =
+        suggestedWeight(exercise);
+
         const previousSets =
         getLastExerciseSets(exercise);
+
+        <div class="previous-performance">
+
+            Suggested:
+
+            ${
+                suggestion
+                ? suggestion+' lbs'
+                : 'Use a comfortable weight'
+            }
+
+        </div>
 
         const card =
         document.createElement('div');
@@ -319,6 +335,17 @@ document.getElementById(
         const volume =
         calculateVolume(sets);
 
+        if(!db.volumePRs){
+            db.volumePRs = {};
+        }
+
+        if(
+            !db.volumePRs[name] ||
+            volume > db.volumePRs[name]
+        ){
+            db.volumePRs[name] = volume;
+        }
+
         let exercisePR = false;
 
         sets.forEach(set=>{
@@ -464,6 +491,132 @@ const ctx=document.getElementById('weightChart');
 new Chart(ctx,{type:'line',data:{labels:db.weights.map(x=>x.date.slice(0,10)),datasets:[{label:'Weight',data:db.weights.map(x=>x.weight)}]}});
 }
 
+function populateHistoryDropdown(){
+
+    const dropdown =
+    document.getElementById(
+        'historyExercise'
+    );
+
+    const exercises =
+    new Set();
+
+    db.workouts.forEach(workout=>{
+
+        workout.exercises.forEach(ex=>{
+
+            exercises.add(ex.name);
+
+        });
+
+    });
+
+    dropdown.innerHTML='';
+
+    [...exercises]
+    .sort()
+    .forEach(ex=>{
+
+        dropdown.innerHTML += `
+        <option>${ex}</option>
+        `;
+
+    });
+
+}
+
+function showExerciseHistory(){
+
+    const exercise=
+    historyExercise.value;
+
+    const results =
+    document.getElementById(
+        'historyResults'
+    );
+
+    results.innerHTML='';
+
+    db.workouts
+    .slice()
+    .reverse()
+    .forEach(workout=>{
+
+        const found=
+        workout.exercises.find(
+            e=>e.name===exercise
+        );
+
+        if(!found) return;
+
+        results.innerHTML += `
+
+        <div class="history-card">
+
+            <strong>
+            ${new Date(workout.date)
+              .toLocaleDateString()}
+            </strong>
+
+            <br>
+
+            ${
+              found.sets
+              .map(
+                s=>`${s.weight} × ${s.reps}`
+              )
+              .join('<br>')
+            }
+
+            <br><br>
+
+            Volume:
+
+            ${found.volume}
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+historyExercise.addEventListener(
+'change',
+showExerciseHistory
+);
+
+function suggestedWeight(exercise){
+
+    const previous =
+    getLastExerciseSets(exercise);
+
+    if(!previous)
+        return null;
+
+    let lastWeight =
+    previous[0].weight;
+
+    let averageReps =
+
+    previous.reduce(
+        (sum,set)=>
+        sum+Number(set.reps),
+        0
+    ) /
+    previous.length;
+
+    if(averageReps >= 8){
+
+        return lastWeight + 5;
+
+    }
+
+    return lastWeight;
+
+}
+
 document.querySelectorAll('nav button').forEach(btn=>{
 btn.addEventListener('click',()=>{
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -488,4 +641,5 @@ navigator.serviceWorker.register('service-worker.js');
 }
 
 refreshDashboard();
+populateHistoryDropdown();
 drawCharts();
